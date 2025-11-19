@@ -1,5 +1,6 @@
 const express = require('express');
 const healthController = require('../controllers/health');
+const notesRoutes = require('./notes');
 
 const router = express.Router();
 // Health endpoint
@@ -31,5 +32,8 @@ const router = express.Router();
  *                   example: development
  */
 router.get('/', healthController.check.bind(healthController));
+
+// Notes endpoints: POST /notes, GET /notes, GET /notes/:id, PUT /notes/:id, DELETE /notes/:id
+router.use('/notes', notesRoutes);
 
 module.exports = router;

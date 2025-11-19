@@ -38,15 +38,28 @@ app.use('/docs', swaggerUi.serve, (req, res, next) => {
   swaggerUi.setup(dynamicSpec)(req, res, next);
 });
 
-// Parse JSON request body
+/**
+ * Express application for Notes Manager API
+ * - CORS enabled
+ * - JSON body parsing
+ * - Serves OpenAPI docs at /docs
+ * - Routes: /notes for CRUD
+ */
 app.use(express.json());
 
 // Mount routes
 app.use('/', routes);
 
+// Handle 404 not found (for unknown endpoints)
+app.use((req, res) => {
+  res.status(404).json({ message: 'Not found' });
+});
+
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
+  // If headers are already sent, delegate to default handler
+  if (res.headersSent) return next(err);
   res.status(500).json({
     status: 'error',
     message: 'Internal Server Error',
